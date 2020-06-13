@@ -113,7 +113,10 @@
               (cons (file-name-sans-extension f) directory))
           (directory-files directory nil "\\.ac$" nil)))
      dirs)))
-
+;;;###autoload
+(defun skeleton-snippet-add-snippet-directory (dir)
+  (setq skeleton-snippet-directories
+        (delete-dups (cons dir skeleton-snippet-directories))))
 ;;;###autoload
 (defun wcy-read-variable (prompt predicate &optional default)
   "read a varable"
