@@ -8,5 +8,5 @@ skeleton-snippet is much faster at startup, it does
 nothing. Everything is autoloaded. It is only implemented by less than
 200 lines of elisp source codes. It does not have many fancy features,
 like editing snippets. A snippet file is just a s-expression for
-`skeleton-insert`, it is not a good news if you don't fimilar with
-S-expression.
+`skeleton-insert`, it is not a good news if you don't like
+s-expression.
