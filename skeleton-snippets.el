@@ -1,4 +1,4 @@
-;;; wcy-snippets.el --- snipppets                    -*- lexical-binding: t; -*-
+;;; skeleton-snippet.el --- snipppets                    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020  Chunye Wang
 
@@ -24,7 +24,7 @@
 ;;
 
 ;;; Code:
-(defconst wcy-snippets-this-directory
+(defconst skeleton-snippet-this-directory
    (file-name-directory
     ;; Copied from ‘f-this-file’ from f.el.
     (cond
@@ -36,22 +36,23 @@
 (require 'skeleton)
 (require 'cl-seq)
 (require 'wcy-compose (locate-file "wcy-compose"
-                                   (cons wcy-snippets-this-directory
+                                   (cons skeleton-snippet-this-directory
                                          load-path)
                                    '(".elc" ".el") nil))
-(defvar wcy-snippets-directories
+(defvar skeleton-snippet-directories
   (list
-   (expand-file-name "snippets" wcy-snippets-this-directory)
-   (expand-file-name "wcy-snippets" user-emacs-directory)))
+   (expand-file-name "snippets" skeleton-snippet-this-directory)
+   (expand-file-name ".skeleton-snippet" (getenv "HOME"))
+   (expand-file-name "skeleton-snippet" user-emacs-directory)))
 
-(defvar wcy-snippets-history nil)
-(make-variable-buffer-local 'wcy-snippets-history)
+(defvar skeleton-snippet-history nil)
+(make-variable-buffer-local 'skeleton-snippet-history)
 ;;;###autoload
-(defun wcy-snippets()
+(defun skeleton-snippet()
   (interactive)
-  (apply #'wcy-snippets-execute-ac (wcy-snippets-guess-ac)))
-(defun wcy-snippets-guess-ac ()
-  (let* ((ac-defines (wcy-snippets-build-defs))
+  (apply #'skeleton-snippet-execute-ac (skeleton-snippet-guess-ac)))
+(defun skeleton-snippet-guess-ac ()
+  (let* ((ac-defines (skeleton-snippet-build-defs))
          (abbrevations (mapcar 'car ac-defines))
          (ret-old (cond
                    ((looking-back (regexp-opt abbrevations) (line-beginning-position))
@@ -63,9 +64,9 @@
                                (completions (all-completions input-text abbrevations)))
                           (list (if (= (length completions) 1)
                                     (car completions)
-                                  (completing-read "wcy-snippets:"
+                                  (completing-read "skeleton-snippet:"
                                                    abbrevations nil t input-text
-                                                   wcy-snippets-history))
+                                                   skeleton-snippet-history))
                                 (car bounds) (cdr bounds)))))))))
     (cons
      (let ((ac (car ret-old)) it)
@@ -74,14 +75,14 @@
          (error "cannot found abbre file  %s " ac)))
      (cdr ret-old))))
 
-(defun wcy-snippets-execute-ac (file-name beg end)
+(defun skeleton-snippet-execute-ac (file-name beg end)
   (when (file-readable-p file-name)
     (delete-region beg end)
     (skeleton-insert
      (with-temp-buffer
        (insert-file-contents file-name)
        (read (current-buffer))))))
-(defun wcy-snippets-get-modes ()
+(defun skeleton-snippet-get-modes ()
   (let ((ret (list major-mode))
         (m major-mode))
     (while (setq m (get m 'derived-mode-parent))
@@ -90,9 +91,9 @@
     (when (not (member 'fundamental-mode ret))
       (push 'fundamental-mode ret))
     (reverse ret)))
-(defun wcy-snippets-build-defs ()
+(defun skeleton-snippet-build-defs ()
   (let* ((modes (mapcar 'symbol-name
-                            (wcy-snippets-get-modes)))
+                            (skeleton-snippet-get-modes)))
          (dirs (cl-mapcan
                 #'(lambda (snippet-dir)
                     (cl-remove-if-not
@@ -104,7 +105,7 @@
                                                    (file-directory-p dir)
                                                    (file-readable-p
                                                     dir)))
-                                  wcy-snippets-directories))))
+                                  skeleton-snippet-directories))))
     (mapcan
      #'(lambda (directory)
          (mapcar
@@ -132,5 +133,5 @@
    nil ;; history
    default
    ))
-(provide 'wcy-snippets)
-;;; wcy-snippets.el ends here
+(provide 'skeleton-snippet)
+;;; skeleton-snippet.el ends here
