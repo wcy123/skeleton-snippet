@@ -10,3 +10,9 @@ nothing. Everything is autoloaded. It is only implemented by less than
 like editing snippets. A snippet file is just a s-expression for
 `skeleton-insert`, it is not a good news if you don't like
 s-expression.
+
+
+## Where are the snippets?
+
+`skeleton-snippet` does not bundles snippets directly, you can get it
+to from https://github.com/wcy123/skeleton-snippet-store.
